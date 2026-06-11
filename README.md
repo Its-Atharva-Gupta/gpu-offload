@@ -1,6 +1,6 @@
 # GPU Offload — Pi to PC
 
-Offload GPU-heavy ML work from the Raspberry Pi to the PC (pop-os, RTX 3060) on the local network.
+Offload GPU-heavy ML work from the Raspberry Pi to the PC on the local network.
 
 ## Architecture
 
@@ -159,21 +159,4 @@ Edit `gpu_dispatcher.py` to change:
 - `PC_USER`: SSH username
 - `SSH_KEY`: Path to SSH key
 
-## Verified Environment (June 2026)
 
-| | |
-|---|---|
-| **PC OS** | Pop!_OS 24.04 LTS |
-| **GPU** | NVIDIA GeForce RTX 3060, 12GB VRAM |
-| **Driver** | 580.82.09, CUDA 13.0 |
-| **Python** | 3.12.3 (system, no PyTorch) |
-| **GPU job server** | `~/Desktop/RL/gpu_job_server.py` |
-| **systemd service** | `gpu-job-server` enabled and auto-starts on boot |
-
-## Pitfalls
-
-- **`sudo` over SSH**: Non-interactive SSH cannot run `sudo` without a TTY. Run sudo commands directly on the PC terminal, or set up passwordless sudo on the PC.
-- **PyTorch not in system Python**: The PC's system Python doesn't have PyTorch. Submitted jobs must use a venv/conda that has it.
-- **Port conflict**: Before starting the GPU job server, check if port 8765 is already in use: `ss -tlnp | grep 8765`.
-- **`shutdown`/`reboot` blocked**: Hermes cannot execute shutdown/reboot commands. The user must run these directly on the PC.
-- **systemd auto-restart masks port conflicts**: Check `systemctl status gpu-job-server` for `activating (auto-restart)` state if things look wrong.
